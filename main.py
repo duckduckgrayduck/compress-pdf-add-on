@@ -26,8 +26,8 @@ class Compress(AddOn):
         os.makedirs(os.path.dirname("./out/"), exist_ok=True)
         downloaded = grab(url, "./out/")
     
-    def compress_pdf(self, file_name):
-        bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile={file_name}-compressed.pdf {file_name}.pdf; rm {file_name}.pdf"
+    def compress_pdf(self, file_name, no_ext):
+        bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile={no_ext}-compressed.pdf {file_name}; rm {file_name}"
         subprocess.call(bash_cmd, shell=True)
         
     def main(self):
@@ -42,15 +42,16 @@ class Compress(AddOn):
                 file_name = os.path.join(current_path, file_name)
                 self.set_message("Attempting to compress PDF files")
                 abs_path = os.path.abspath(file_name)
+                file_name_no_ext = os.path.splitext(abs_path)[0]
                 try:
-                    self.compress_pdf(abs_path)
+                    self.compress_pdf(abs_path, file_name_no_ext)
                 except RuntimeError as re:
                     self.send_mail("Runtime Error for Email Conversion AddOn", "Please forward this to info@documentcloud.org \n" + str(re))
                     errors += 1
                     continue
                 else:
                     self.set_message("Uploading compressed file to DocumentCloud...")
-                    file_name_no_ext = os.path.splitext(abs_path)[0]
+                    
                     self.client.documents.upload(f"{file_name_no_ext}-compressed.pdf")
                     successes += 1
         sfiles = "file" if successes == 1 else "files"
