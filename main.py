@@ -32,7 +32,7 @@ class Compress(AddOn):
         os.chdir("..")
 
     def compress_pdf(self, file_path, no_ext):
-        bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dBATCH -sOutputFile={no_ext}-compressed.pdf {file_path};"
+        bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile={no_ext}-compressed.pdf {file_path};"
         subprocess.call(bash_cmd, shell=True)
         
     def main(self):
@@ -47,7 +47,6 @@ class Compress(AddOn):
                 file_name = os.path.join(current_path, file_name)
                 self.set_message("Attempting to compress PDF files")
                 abs_path = os.path.abspath(file_name)
-                print(abs_path)
                 file_name_no_ext = os.path.splitext(abs_path)[0]
                 try:
                     self.compress_pdf(abs_path, file_name_no_ext)
