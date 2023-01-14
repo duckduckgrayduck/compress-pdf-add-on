@@ -22,12 +22,12 @@ class Compress(AddOn):
             
     def fetch_files(self, url):
         """Fetch the files from either a cloud share link or any public URL"""
-        self.set_message("Retrieving EML/MSG files...")
+        self.set_message("Retrieving files to compress...")
         os.makedirs(os.path.dirname("./out/"), exist_ok=True)
         downloaded = grab(url, "./out/")
         filenames = os.listdir("./out/")
         for file in filenames:
-            os.rename(filename, filename.replace(" ", "-"))
+            os.rename(file, file.replace(" ", "-"))
         os.chdir("..")
 
     def compress_pdf(self, file_name, no_ext):
