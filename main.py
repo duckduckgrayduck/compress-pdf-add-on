@@ -32,7 +32,7 @@ class Compress(AddOn):
         
     def main(self):
         """The main add-on functionality goes here."""
-        name = self.data.get("url")
+        url = self.data.get("url")
         self.check_permissions()
         self.fetch_files(url)
         successes = 0
