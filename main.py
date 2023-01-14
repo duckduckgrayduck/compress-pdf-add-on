@@ -25,7 +25,11 @@ class Compress(AddOn):
         self.set_message("Retrieving EML/MSG files...")
         os.makedirs(os.path.dirname("./out/"), exist_ok=True)
         downloaded = grab(url, "./out/")
-    
+        filenames = os.listdir("./out/")
+        for file in filenames:
+            os.rename(filename, filename.replace(" ", "-"))
+        os.chdir("..")
+
     def compress_pdf(self, file_name, no_ext):
         bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile={no_ext}-compressed.pdf {file_name}; rm {file_name}"
         subprocess.call(bash_cmd, shell=True)
@@ -51,7 +55,6 @@ class Compress(AddOn):
                     continue
                 else:
                     self.set_message("Uploading compressed file to DocumentCloud...")
-                    
                     self.client.documents.upload(f"{file_name_no_ext}-compressed.pdf")
                     successes += 1
         sfiles = "file" if successes == 1 else "files"
