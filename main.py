@@ -26,6 +26,7 @@ class Compress(AddOn):
         os.makedirs(os.path.dirname("./out/"), exist_ok=True)
         downloaded = grab(url, "./out/")
         filenames = os.listdir("./out/")
+        os.chdir("./out/"
         for file in filenames:
             os.rename(file, file.replace(" ", "-"))
         os.chdir("..")
