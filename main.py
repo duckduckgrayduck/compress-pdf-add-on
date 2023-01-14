@@ -31,8 +31,8 @@ class Compress(AddOn):
             os.rename(file, file.replace(" ", "-"))
         os.chdir("..")
 
-    def compress_pdf(self, file_name, no_ext):
-        bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile={no_ext}-compressed.pdf {file_name}; rm {file_name}"
+    def compress_pdf(self, file_path, no_ext):
+        bash_cmd = f"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/screen -dNOPAUSE -dBATCH -sOutputFile={no_ext}-compressed.pdf {file_path};"
         subprocess.call(bash_cmd, shell=True)
         
     def main(self):
@@ -47,11 +47,12 @@ class Compress(AddOn):
                 file_name = os.path.join(current_path, file_name)
                 self.set_message("Attempting to compress PDF files")
                 abs_path = os.path.abspath(file_name)
+                print(abs_path)
                 file_name_no_ext = os.path.splitext(abs_path)[0]
                 try:
                     self.compress_pdf(abs_path, file_name_no_ext)
                 except RuntimeError as re:
-                    self.send_mail("Runtime Error for Email Conversion AddOn", "Please forward this to info@documentcloud.org \n" + str(re))
+                    self.send_mail("Runtime Error for Compression AddOn", "Please forward this to info@documentcloud.org \n" + str(re))
                     errors += 1
                     continue
                 else:
@@ -60,7 +61,7 @@ class Compress(AddOn):
                     successes += 1
         sfiles = "file" if successes == 1 else "files"
         efiles = "file" if errors == 1 else "files"
-        self.set_message(f"Converted {successes} {sfiles}, skipped {errors} {efiles}")
+        self.set_message(f"Compressed {successes} {sfiles}, skipped {errors} {efiles}")
         shutil.rmtree("./out", ignore_errors=False, onerror=None)
 if __name__ == "__main__":
     Compress().main()
