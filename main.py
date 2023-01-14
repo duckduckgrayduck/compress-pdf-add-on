@@ -55,9 +55,14 @@ class Compress(AddOn):
                     errors += 1
                     continue
                 else:
-                    self.set_message("Uploading compressed file to DocumentCloud...")
-                    self.client.documents.upload(f"{file_name_no_ext}-compressed.pdf")
-                    successes += 1
+                    file_stat = os.stat(f"{file_name_no_ext}-compressed.pdf")
+                    if file_stat.st_size > 525336576:
+                        self.set_message(f"Your file {file_name_no_ext}-compressed.pdf is still too big to upload, try splitting up the file before uploading")
+                        errors += 1
+                    else:
+                        self.set_message("Uploading compressed file to DocumentCloud...")
+                        self.client.documents.upload(f"{file_name_no_ext}-compressed.pdf")
+                        successes += 1
         sfiles = "file" if successes == 1 else "files"
         efiles = "file" if errors == 1 else "files"
         self.set_message(f"Compressed {successes} {sfiles}, skipped {errors} {efiles}")
