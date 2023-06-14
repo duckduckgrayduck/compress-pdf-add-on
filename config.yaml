@@ -11,3 +11,5 @@ properties:
     description: A publicly accessible Google Drive or Dropbox folder or file. 
 required:
   - url
+categories:
+  - file
